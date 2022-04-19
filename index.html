@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+		<script src="js/three.js"></script>
+		<script>
+
+			const loader = new THREE.FileLoader();
+
+			//load a text file and output the result to the console
+			loader.load(
+				// resource URL
+				'pyramid.obj',
+
+				// onLoad callback
+				function ( data ) {
+					var lineas = data.split( '\n' );
+
+					for (let i = 0; i < lineas.length; i++)
+					{
+						console.log(lineas[i].charAt(0));
+					}
+					// output the text to the console
+					
+				},
+
+				// onProgress callback
+				function ( xhr ) {
+					console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+				},
+
+				// onError callback
+				function ( err ) {
+					console.error( 'An error happened' );
+				}
+			);
+
+			// FUENTE DE OBJs
+			//https://people.sc.fsu.edu/~jburkardt/data/obj/obj.html
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			const camera = new THREE.PerspectiveCamera( 15, window.innerWidth / window.innerHeight, 1, 400 );
+			camera.position.set( 0, 0, 100 );
+			camera.lookAt( 0, 0, 0 );
+
+			const scene = new THREE.Scene();
+
+			const geometry = new THREE.BufferGeometry();
+
+			// create a simple square shape. We duplicate the top left and bottom right
+			// vertices because each vertex needs to appear once per triangle.
+			const vertices = new Float32Array( [
+				-1.0, -1.0,  1.0,
+				1.0, -1.0,  1.0,
+				1.0,  1.0,  1.0,
+
+				-1.0, -4.0,  1.0,
+				1.0, -4.0,  1.0,
+				1.0,  -2.0,  1.0
+			] );
+
+			// itemSize = 3 because there are 3 values (components) per vertex
+			geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+			const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+			const mesh = new THREE.Mesh( geometry, material );
+
+			scene.add( mesh );
+			renderer.render( scene, camera );
+		</script>
+	</body>
+</html>
